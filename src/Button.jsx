@@ -1,4 +1,11 @@
-import PropTypes from 'prop-types';
+import className from 'classnames';
+
+const finalClassName = className('px-1.5', {
+  'bg-blue-500': true,
+  'text-yellow-500': true,
+});
+
+console.log(finalClassName);
 
 const Button = ({
   children,
@@ -10,7 +17,11 @@ const Button = ({
   outline,
   rounded,
 }) => {
-  return <button>{children}</button>;
+  return (
+    <button className='px-3 py-1.5 border border-blue-600 bg-blue-500 text-white'>
+      {children}
+    </button>
+  );
 };
 
 Button.propTypes = {
