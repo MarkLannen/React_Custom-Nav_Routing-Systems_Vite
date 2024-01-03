@@ -9,7 +9,11 @@ function Link({ to, children }) {
     navigate(to);
   };
 
-  return <a onClick={handleClick}>{children}</a>;
+  return (
+    <a href={to} onClick={handleClick}>
+      {children}
+    </a>
+  );
 }
 
 export default Link;
