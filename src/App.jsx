@@ -13,7 +13,7 @@ function App() {
         <Route path='/accordion'>
           <AccordionPage />
         </Route>
-        <Route path='dropdown'>
+        <Route path='/dropdown'>
           <DropdownPage />
         </Route>
       </div>
