@@ -29,4 +29,6 @@ function Table({ data, config, keyFn }) {
 	);
 }
 
+// test line
+
 export default Table;
