@@ -1,102 +1,68 @@
 import React from 'react';
-import { useState } from 'react';
 import Table from './Table';
 import { GoArrowDown, GoArrowUp } from 'react-icons/go';
+import useSort from '../hooks/use-sort';
 
 function SortableTable(props) {
-	const [sortOrder, setSortOder] = useState(null);
-	const [sortBy, setSortby] = useState(null);
-	const { config, data } = props;
+  const { config, data } = props;
+  const { sortOrder, sortBy, sortedData, setSortColumn } = useSort(
+    data,
+    config
+  );
 
-	const handleClick = (label) => {
-		if (sortBy && label !== sortBy) {
-			setSortOder('asc');
-			setSortby(label);
-			return;
-		}
+  const updatedConfig = config.map((column) => {
+    if (!column.sortValue) {
+      return column;
+    }
 
-		if (sortOrder === null) {
-			setSortOder('asc');
-			setSortby(label);
-		} else if (sortOrder === 'asc') {
-			setSortOder('desc');
-			setSortby(label);
-		} else if (sortOrder === 'desc') {
-			setSortOder(null);
-			setSortby(null);
-		}
-	};
+    return {
+      ...column,
+      header: () => (
+        <th
+          className='cursor-pointer hover:bg-gray-100'
+          key={column.label}
+          onClick={() => setSortColumn(column.label)}
+        >
+          <div className='flex items-center'>
+            {getIcons(column.label, sortBy, sortOrder)}
+            {column.label}
+          </div>
+        </th>
+      ),
+    };
+  });
 
-	const updatedConfig = config.map((column) => {
-		if (!column.sortValue) {
-			return column;
-		}
-
-		return {
-			...column,
-			header: () => (
-				<th
-					className="cursor-pointer hover:bg-gray-100"
-					key={column.label}
-					onClick={() => handleClick(column.label)}
-				>
-					<div className="flex items-center">
-						{getIcons(column.label, sortBy, sortOrder)}
-						{column.label}
-					</div>
-				</th>
-			),
-		};
-	});
-
-	let sortedData = data;
-	if (sortOrder && sortBy) {
-		const { sortValue } = config.find((column) => column.label === sortBy);
-		sortedData = [...data].sort((a, b) => {
-			const valueA = sortValue(a);
-			const valueB = sortValue(b);
-
-			const reverseOrder = sortOrder === 'asc' ? 1 : -1;
-
-			if (typeof valueA === 'string') {
-				return valueA.localeCompare(valueB) * reverseOrder;
-			} else {
-				return (valueA - valueB) * reverseOrder;
-			}
-		});
-	}
-
-	return <Table {...props} data={sortedData} config={updatedConfig} />;
+  return <Table {...props} data={sortedData} config={updatedConfig} />;
 }
 
 const getIcons = (label, sortBy, sortOrder) => {
-	if (label !== sortBy) {
-		return (
-			<div>
-				<GoArrowUp />
-				<GoArrowDown />
-			</div>
-		);
-	}
+  if (label !== sortBy) {
+    return (
+      <div>
+        <GoArrowUp />
+        <GoArrowDown />
+      </div>
+    );
+  }
 
-	if (sortOrder === null) {
-		return (
-			<div>
-				<GoArrowUp />
-				<GoArrowDown />
-			</div>
-		);
-	} else if (sortOrder === 'asc') {
-		return (
-			<div>
-				<GoArrowUp />
-			</div>
-		);
-	} else if (sortOrder === 'desc') {
-		<div>
-			<GoArrowDown />
-		</div>;
-	}
+  if (sortOrder === null) {
+    return (
+      <div>
+        <GoArrowUp />
+        <GoArrowDown />
+      </div>
+    );
+  } else if (sortOrder === 'asc') {
+    return (
+      <div>
+        <GoArrowUp />
+      </div>
+    );
+  } else if (sortOrder === 'desc') {
+    <div>
+      <GoArrowDown />
+    </div>;
+  }
 };
 
 export default SortableTable;
